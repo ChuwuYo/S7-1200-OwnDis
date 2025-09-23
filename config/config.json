@@ -1,0 +1,19 @@
+{
+  "ip": "192.168.0.217",
+  "port": 502,
+  "unitId": 1,
+  "speedDelays": [
+    1000,
+    500,
+    200
+  ],
+  "pollIntervalMs": 200,
+  "windowSize": [
+    800,
+    600
+  ],
+  "windowPosition": [
+    100,
+    100
+  ]
+}
