@@ -79,15 +79,20 @@ S7-1200-OwnDis/
 go build -o s7-1200-marquee.exe .
 ```
 
-#### 禁用 CGO 编译 (无 GUI)
+#### 禁用 CGO 编译
 ```bash
 set CGO_ENABLED=0 && go build -v -o s7-1200-marquee.exe .
 ```
 
-### 编译输出
-- **文件大小**：约 49MB (包含完整 GUI 支持)
-- **文件位置**：根目录下生成 `s7-1200-marquee.exe`
-- **依赖检查**：自动下载和更新依赖包
+#### UPX 压缩 (推荐 - 减小文件大小)
+```bash
+# 下载并使用 UPX 压缩 (UPX文件可放在任意位置)
+powershell -command "Invoke-WebRequest -Uri 'https://github.com/upx/upx/releases/download/v4.2.4/upx-4.2.4-win64.zip' -OutFile 'upx.zip'; Expand-Archive -Path 'upx.zip' -DestinationPath '.'"
+upx-4.2.4-win64\upx.exe --best --lzma s7-1200-marquee.exe
+
+# 或者如果UPX在其他位置，修改路径即可
+# C:\path\to\upx.exe --best --lzma s7-1200-marquee.exe
+```
 
 ## 📖 使用说明
 
