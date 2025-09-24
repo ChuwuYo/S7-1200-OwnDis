@@ -224,8 +224,17 @@ func (ui *WebUI) initTemplate() {
                     // 更新IO状态
                     updateIOStatus('dqGrid', data.DQStatus);
                     updateIOStatus('diGrid', data.DIStatus);
+                    updateManualControlCheckboxes(data.DQStatus);
                 })
                 .catch(err => console.log('Error:', err));
+        }
+
+        function updateManualControlCheckboxes(statusArray) {
+            const grid = document.getElementById('manualGrid');
+            const checkboxes = grid.getElementsByTagName('input');
+            for (let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = (statusArray[i] === 'ON');
+            }
         }
 
         function updateIOStatus(gridId, statusArray) {
@@ -600,6 +609,9 @@ func (ui *WebUI) handleSwitchSpeed(w http.ResponseWriter, r *http.Request) {
 
 // handleToggleOutput 处理输出状态设置请求
 func (ui *WebUI) handleToggleOutput(w http.ResponseWriter, r *http.Request) {
+	ui.mu.Lock()
+	defer ui.mu.Unlock()
+
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

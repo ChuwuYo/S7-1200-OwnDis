@@ -114,7 +114,7 @@ func main() {
 				ui.UpdateHumidity(60.0)
 			}
 
-			time.Sleep(1 * time.Second)
+			time.Sleep(200 * time.Millisecond)
 		}
 	}()
 
