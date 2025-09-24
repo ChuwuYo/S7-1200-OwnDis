@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"log"
 	"net"
 	"time"
 )
@@ -214,4 +215,59 @@ func CalculateShortAddress(logicAddr uint16, addrType uint16) uint16 {
 	default:
 		return logicAddr
 	}
+}
+
+// parseCoilsResponse 解析线圈响应数据
+func parseCoilsResponse(resp []byte, quantity int) []bool {
+	if len(resp) < 2 {
+		return make([]bool, quantity)
+	}
+
+	byteCount := int(resp[1])
+	data := resp[2:]
+
+	if len(data) < byteCount {
+		return make([]bool, quantity)
+	}
+
+	coils := make([]bool, quantity)
+
+	for i := 0; i < quantity; i++ {
+		byteIndex := i / 8
+		bitIndex := i % 8
+
+		if byteIndex < len(data) {
+			coils[i] = (data[byteIndex] & (1 << bitIndex)) != 0
+		}
+	}
+
+	log.Printf("Parsed Coils: %v", coils)
+	return coils
+}
+
+// parseDiscreteInputsResponse 解析离散输入响应数据
+func parseDiscreteInputsResponse(resp []byte, quantity int) []bool {
+	if len(resp) < 2 {
+		return make([]bool, quantity)
+	}
+
+	byteCount := int(resp[1])
+	data := resp[2:]
+
+	if len(data) < byteCount {
+		return make([]bool, quantity)
+	}
+
+	inputs := make([]bool, quantity)
+
+	for i := 0; i < quantity; i++ {
+		byteIndex := i / 8
+		bitIndex := i % 8
+
+		if byteIndex < len(data) {
+			inputs[i] = (data[byteIndex] & (1 << bitIndex)) != 0
+		}
+	}
+
+	return inputs
 }

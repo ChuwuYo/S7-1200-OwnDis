@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -9,14 +8,14 @@ import (
 type InputController struct {
 	client        *ModbusClient
 	marquee       *MarqueeController
-	ui            *UI
+	ui            *WebUI
 	config        *Config
 	previousInputs []bool  // 上一次的输入状态，用于边沿检测
 	stopChan      chan bool
 }
 
 // NewInputController 创建新的输入控制器
-func NewInputController(client *ModbusClient, marquee *MarqueeController, ui *UI, config *Config) *InputController {
+func NewInputController(client *ModbusClient, marquee *MarqueeController, ui *WebUI, config *Config) *InputController {
 	return &InputController{
 		client:        client,
 		marquee:       marquee,
@@ -108,17 +107,17 @@ func (ic *InputController) parseDiscreteInputs(resp []byte) []bool {
 
 // updateUI 更新UI显示
 func (ic *InputController) updateUI(inputs []bool) {
-	// 在UI线程中更新界面
+	// 更新界面
 	if ic.ui == nil {
 		return
 	}
 
 	// 更新DI状态显示
-	for i := 0; i < len(inputs) && i < len(ic.ui.diStatus); i++ {
+	for i := 0; i < len(inputs); i++ {
 		if inputs[i] {
-			ic.ui.diStatus[i].SetText(fmt.Sprintf("I%d.%d: ON", i/8, i%8))
+			ic.ui.UpdateDIStatus(i, "ON")
 		} else {
-			ic.ui.diStatus[i].SetText(fmt.Sprintf("I%d.%d: OFF", i/8, i%8))
+			ic.ui.UpdateDIStatus(i, "OFF")
 		}
 	}
 }

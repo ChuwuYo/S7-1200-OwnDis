@@ -32,7 +32,12 @@ func DefaultConfig() *Config {
 
 // LoadConfig 从文件加载配置
 func LoadConfig() (*Config, error) {
-	configPath := filepath.Join("config", "config.json")
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	configPath := filepath.Join(exPath, "config", "config.json")
 	
 	// 检查配置文件是否存在
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
@@ -96,6 +101,11 @@ func saveConfig(config *Config, configPath string) error {
 
 // SaveConfig 保存配置到默认位置
 func (c *Config) SaveConfig() error {
-	configPath := filepath.Join("config", "config.json")
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	configPath := filepath.Join(exPath, "config", "config.json")
 	return saveConfig(c, configPath)
 }

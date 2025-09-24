@@ -72,6 +72,9 @@ func (m *MarqueeController) SwitchSpeed() {
 
 // GetDelay 获取当前挡位延时值
 func (m *MarqueeController) GetDelay() int {
+	if m.config == nil || len(m.config.SpeedDelays) == 0 {
+		return 1000 // 默认延时
+	}
 	if m.speedLevel <= 0 || m.speedLevel > len(m.config.SpeedDelays) {
 		return 1000 // 默认延时
 	}

@@ -10,12 +10,12 @@ import (
 // EnvironmentMonitor 环境监测器
 type EnvironmentMonitor struct {
 	client   *ModbusClient
-	ui       *UI
+	ui       *WebUI
 	stopChan chan bool
 }
 
 // NewEnvironmentMonitor 创建新的环境监测器
-func NewEnvironmentMonitor(client *ModbusClient, ui *UI) *EnvironmentMonitor {
+func NewEnvironmentMonitor(client *ModbusClient, ui *WebUI) *EnvironmentMonitor {
 	return &EnvironmentMonitor{
 		client:   client,
 		ui:       ui,
@@ -57,15 +57,15 @@ func (em *EnvironmentMonitor) readAndUpdateEnvironment() {
 	// 读取温度
 	temp, err := em.ReadTemperature()
 	if err == nil {
-		// 直接更新UI（在goroutine中调用）
-		em.ui.temperature.SetText(em.FormatTemperature(temp))
+		// 更新温度显示
+		em.ui.UpdateTemperature(temp)
 	}
 
 	// 读取湿度
 	humid, err := em.ReadHumidity()
 	if err == nil {
-		// 直接更新UI（在goroutine中调用）
-		em.ui.humidity.SetText(em.FormatHumidity(humid))
+		// 更新湿度显示
+		em.ui.UpdateHumidity(humid)
 	}
 }
 
@@ -74,20 +74,20 @@ func (em *EnvironmentMonitor) ReadTemperature() (float64, error) {
 	if em.client.conn == nil {
 		return 0, nil
 	}
-	
-	// 读取输入寄存器30033 (短地址32)
+
+	// 读取输入寄存器30033 (IW64，短地址32)
 	resp, err := em.client.ReadInputRegisters(32, 1)
 	if err != nil {
 		return 0, err
 	}
-	
-	// 解析温度值
-	tempRaw := em.parseRegisterValue(resp)
-	
+
+	// 解析温度值 - 尝试小端字节序
+	tempRaw := em.parseRegisterValueLittleEndian(resp)
+
 	// 转换为实际温度值
 	// 温度（℃） = (值 / 27648) × 120 − 40
 	temperature := (float64(tempRaw) / 27648.0) * 120.0 - 40.0
-	
+
 	return temperature, nil
 }
 
@@ -96,20 +96,20 @@ func (em *EnvironmentMonitor) ReadHumidity() (float64, error) {
 	if em.client.conn == nil {
 		return 0, nil
 	}
-	
-	// 读取输入寄存器30034 (短地址33)
+
+	// 读取输入寄存器30034 (IW66，短地址33)
 	resp, err := em.client.ReadInputRegisters(33, 1)
 	if err != nil {
 		return 0, err
 	}
-	
-	// 解析湿度值
-	humidRaw := em.parseRegisterValue(resp)
-	
+
+	// 解析湿度值 - 尝试小端字节序
+	humidRaw := em.parseRegisterValueLittleEndian(resp)
+
 	// 转换为实际湿度值
 	// 湿度（%） = (值 / 27648) × 100
 	humidity := (float64(humidRaw) / 27648.0) * 100.0
-	
+
 	return humidity, nil
 }
 
@@ -118,15 +118,32 @@ func (em *EnvironmentMonitor) parseRegisterValue(resp []byte) uint16 {
 	if len(resp) < 3 {
 		return 0
 	}
-	
+
 	// 第一个字节是字节数
 	byteCount := int(resp[0])
 	if byteCount < 2 {
 		return 0
 	}
-	
+
 	// 大端解析两个字节
 	value := binary.BigEndian.Uint16(resp[1:3])
+	return value
+}
+
+// parseRegisterValueLittleEndian 解析寄存器值（小端）
+func (em *EnvironmentMonitor) parseRegisterValueLittleEndian(resp []byte) uint16 {
+	if len(resp) < 3 {
+		return 0
+	}
+
+	// 第一个字节是字节数
+	byteCount := int(resp[0])
+	if byteCount < 2 {
+		return 0
+	}
+
+	// 小端解析两个字节
+	value := binary.LittleEndian.Uint16(resp[1:3])
 	return value
 }
 

@@ -74,14 +74,14 @@ S7-1200-OwnDis/
 
 ### 编译命令
 
-#### 完整编译 (推荐)
+#### 编译
 ```bash
 go build -v -o s7-1200-marquee.exe .
 ```
 
 #### 禁用 CGO 编译
 ```bash
-set CGO_ENABLED=0 && go build -v -o s7-1200-marquee.exe .
+set CGO_ENABLED=0 && go build -x -v -o s7-1200-marquee.exe .
 ```
 
 #### UPX 压缩 (推荐 - 减小文件大小)
