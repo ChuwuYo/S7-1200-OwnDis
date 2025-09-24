@@ -76,7 +76,7 @@ S7-1200-OwnDis/
 
 #### 完整编译 (推荐)
 ```bash
-go build -o s7-1200-marquee.exe .
+go build -v -o s7-1200-marquee.exe .
 ```
 
 #### 禁用 CGO 编译
