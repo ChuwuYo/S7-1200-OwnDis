@@ -117,7 +117,7 @@ func (ui *WebUI) initTemplate() {
 	            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 	            margin: 0;
 	            padding: 24px;
-	            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+	            background:rgb(224, 217, 204);
 	            color: var(--md-sys-color-on-surface);
 	            line-height: 1.5;
 	        }
