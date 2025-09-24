@@ -1,19 +1,23 @@
 package main
 
 import (
+	"io"
 	"log"
 	"os"
 	"time"
 )
 
 func main() {
-	// 设置日志输出到文件
+	// 设置日志同时输出到文件和控制台
 	logFile, err := os.OpenFile("marquee_log.txt", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("无法打开日志文件: %v", err)
 	}
 	defer logFile.Close()
-	log.SetOutput(logFile)
+
+	// 创建多重写入器，同时输出到文件和控制台
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(multiWriter)
 
 	// 加载配置
 	config, err := LoadConfig()

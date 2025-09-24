@@ -74,89 +74,520 @@ func (ui *WebUI) initTemplate() {
 	}
 
 	tmpl := `
-<!DOCTYPE html>
-<html>
-<head>
-    <title>S7-1200 跑马灯控制程序</title>
-    <meta charset="utf-8">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f0f0f0; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .status-bar { display: flex; justify-content: space-around; margin-bottom: 20px; padding: 10px; background: #e8f4f8; border-radius: 5px; }
-        .status-item { text-align: center; }
-        .control-panel { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; }
-        .btn { padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; }
-        .btn-primary { background: #007bff; color: white; }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-success { background: #28a745; color: white; }
-        .btn:disabled { background: #6c757d; cursor: not-allowed; }
-        .connection-settings { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: inline-block; width: 100px; }
-        .form-group input { padding: 5px; width: 200px; }
-        .io-status { display: flex; gap: 30px; margin-bottom: 30px; }
-        .io-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .io-item { padding: 5px; text-align: center; border: 1px solid #ddd; border-radius: 3px; }
-        .io-item.on { background: #28a745; color: white; }
-        .io-item.off { background: #dc3545; color: white; }
-        .manual-control { background: #fff3cd; padding: 20px; border-radius: 5px; }
-        .environment { background: #d1ecf1; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-        .footer { text-align: center; margin-top: 30px; color: #666; }
-    </style>
-</head>
+	<!DOCTYPE html>
+	<html lang="zh-CN">
+	<head>
+	    <title>S7-1200 跑马灯控制程序</title>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+	    <style>
+	        /* Material Design 3 主题色 */
+	        :root {
+	            --md-sys-color-primary: #1976d2;
+	            --md-sys-color-on-primary: #ffffff;
+	            --md-sys-color-primary-container: #d3e4fd;
+	            --md-sys-color-on-primary-container: #001b3e;
+	            --md-sys-color-secondary: #565f71;
+	            --md-sys-color-on-secondary: #ffffff;
+	            --md-sys-color-secondary-container: #dae2f9;
+	            --md-sys-color-on-secondary-container: #131c2b;
+	            --md-sys-color-tertiary: #705575;
+	            --md-sys-color-on-tertiary: #ffffff;
+	            --md-sys-color-tertiary-container: #fdd7fc;
+	            --md-sys-color-on-tertiary-container: #28132e;
+	            --md-sys-color-error: #ba1a1a;
+	            --md-sys-color-on-error: #ffffff;
+	            --md-sys-color-error-container: #ffdad6;
+	            --md-sys-color-on-error-container: #410002;
+	            --md-sys-color-surface: #fef7ff;
+	            --md-sys-color-on-surface: #1a1c1e;
+	            --md-sys-color-surface-variant: #dde3ea;
+	            --md-sys-color-on-surface-variant: #41484d;
+	            --md-sys-color-outline: #71787e;
+	            --md-sys-color-shadow: #000000;
+	            --md-sys-color-surface-tint: #1976d2;
+	        }
+
+	        * {
+	            box-sizing: border-box;
+	        }
+
+	        body {
+	            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	            margin: 0;
+	            padding: 24px;
+	            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+	            color: var(--md-sys-color-on-surface);
+	            line-height: 1.5;
+	        }
+
+	        .app-container {
+	            max-width: 1400px;
+	            margin: 0 auto;
+	            display: grid;
+	            gap: 24px;
+	        }
+
+	        /* 顶部应用栏 */
+	        .app-bar {
+	            background: var(--md-sys-color-surface);
+	            border-radius: 28px;
+	            padding: 16px 32px;
+	            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	            margin-bottom: 8px;
+	        }
+
+	        .app-title {
+	            font-size: 28px;
+	            font-weight: 500;
+	            color: var(--md-sys-color-on-surface);
+	            margin: 0;
+	            text-align: center;
+	        }
+
+	        /* 状态卡片 */
+	        .status-cards {
+	            display: grid;
+	            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	            gap: 16px;
+	            margin-bottom: 24px;
+	        }
+
+	        .status-card {
+	            background: var(--md-sys-color-surface);
+	            border-radius: 20px;
+	            padding: 20px;
+	            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	            border: 1px solid var(--md-sys-color-surface-variant);
+	            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	        }
+
+	        .status-card:hover {
+	            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	            transform: translateY(-2px);
+	        }
+
+	        .status-label {
+	            font-size: 14px;
+	            font-weight: 500;
+	            color: var(--md-sys-color-on-surface-variant);
+	            margin-bottom: 8px;
+	            text-transform: uppercase;
+	            letter-spacing: 0.5px;
+	        }
+
+	        .status-value {
+	            font-size: 18px;
+	            font-weight: 600;
+	            color: var(--md-sys-color-on-surface);
+	        }
+
+	        .status-value.connected { color: #2e7d32; }
+	        .status-value.running { color: #1976d2; }
+	        .status-value.stopped { color: #d32f2f; }
+
+	        /* 控制按钮组 */
+	        .control-section {
+	            background: var(--md-sys-color-surface);
+	            border-radius: 24px;
+	            padding: 32px;
+	            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	            margin-bottom: 24px;
+	        }
+
+	        .control-title {
+	            font-size: 20px;
+	            font-weight: 500;
+	            color: var(--md-sys-color-on-surface);
+	            margin: 0 0 24px 0;
+	        }
+
+	        .button-group {
+	            display: flex;
+	            gap: 16px;
+	            justify-content: center;
+	            flex-wrap: wrap;
+	        }
+
+	        .md-button {
+	            min-width: 120px;
+	            height: 48px;
+	            padding: 0 24px;
+	            border: none;
+	            border-radius: 24px;
+	            font-size: 16px;
+	            font-weight: 500;
+	            cursor: pointer;
+	            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	            text-transform: none;
+	            letter-spacing: 0.5px;
+	        }
+
+	        .md-button:hover {
+	            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	            transform: translateY(-1px);
+	        }
+
+	        .md-button:active {
+	            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	            transform: translateY(0);
+	        }
+
+	        .md-button.filled {
+	            background: var(--md-sys-color-primary);
+	            color: var(--md-sys-color-on-primary);
+	        }
+
+	        .md-button.filled:hover {
+	            background: #1565c0;
+	        }
+
+	        .md-button.outlined {
+	            background: transparent;
+	            color: var(--md-sys-color-primary);
+	            border: 2px solid var(--md-sys-color-primary);
+	        }
+
+	        .md-button.outlined:hover {
+	            background: var(--md-sys-color-primary);
+	            color: var(--md-sys-color-on-primary);
+	        }
+
+	        /* 连接设置卡片 */
+	        .config-card {
+	            background: var(--md-sys-color-surface);
+	            border-radius: 24px;
+	            padding: 32px;
+	            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	            margin-bottom: 24px;
+	        }
+
+	        .config-title {
+	            font-size: 20px;
+	            font-weight: 500;
+	            color: var(--md-sys-color-on-surface);
+	            margin: 0 0 24px 0;
+	        }
+
+	        .form-grid {
+	            display: grid;
+	            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	            gap: 24px;
+	            margin-bottom: 24px;
+	        }
+
+	        .form-field {
+	            display: flex;
+	            flex-direction: column;
+	        }
+
+	        .form-label {
+	            font-size: 14px;
+	            font-weight: 500;
+	            color: var(--md-sys-color-on-surface-variant);
+	            margin-bottom: 8px;
+	        }
+
+	        .form-input {
+	            height: 48px;
+	            padding: 0 16px;
+	            border: 2px solid var(--md-sys-color-surface-variant);
+	            border-radius: 12px;
+	            font-size: 16px;
+	            background: var(--md-sys-color-surface);
+	            color: var(--md-sys-color-on-surface);
+	            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	        }
+
+	        .form-input:focus {
+	            outline: none;
+	            border-color: var(--md-sys-color-primary);
+	            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+	        }
+
+	        /* IO状态卡片容器 */
+	        .io-cards-container {
+	            display: grid;
+	            grid-template-columns: 1fr 1fr;
+	            gap: 24px;
+	            margin-bottom: 24px;
+	        }
+
+	        .io-card {
+	            background: var(--md-sys-color-surface);
+	            border-radius: 24px;
+	            padding: 32px;
+	            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	        }
+
+	        .io-title {
+	            font-size: 20px;
+	            font-weight: 500;
+	            color: var(--md-sys-color-on-surface);
+	            margin: 0 0 24px 0;
+	            display: flex;
+	            align-items: center;
+	            justify-content: space-between;
+	        }
+
+	        .refresh-button {
+	            background: var(--md-sys-color-secondary-container);
+	            color: var(--md-sys-color-on-secondary-container);
+	            border: none;
+	            border-radius: 20px;
+	            padding: 8px 16px;
+	            font-size: 12px;
+	            font-weight: 500;
+	            cursor: pointer;
+	            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	        }
+
+	        .refresh-button:hover {
+	            background: var(--md-sys-color-on-secondary-container);
+	            color: var(--md-sys-color-secondary-container);
+	        }
+
+	        .io-grid {
+	            display: grid;
+	            grid-template-columns: repeat(4, 1fr);
+	            gap: 12px;
+	        }
+
+	        .io-item {
+	            height: 64px;
+	            border-radius: 16px;
+	            display: flex;
+	            align-items: center;
+	            justify-content: center;
+	            font-size: 14px;
+	            font-weight: 500;
+	            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	            border: 2px solid transparent;
+	            position: relative;
+	        }
+
+	        .io-item.on {
+	            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+	            color: #1b5e20;
+	            border-color: #4caf50;
+	            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+	        }
+
+	        .io-item.off {
+	            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+	            color: #b71c1c;
+	            border-color: #f44336;
+	            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+	        }
+
+	        .io-item:hover {
+	            transform: translateY(-2px);
+	            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	        }
+
+	        /* 环境数据卡片 */
+	        .env-card {
+	            background: var(--md-sys-color-surface);
+	            border-radius: 24px;
+	            padding: 32px;
+	            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	            margin-bottom: 24px;
+	        }
+
+	        .env-title {
+	            font-size: 20px;
+	            font-weight: 500;
+	            color: var(--md-sys-color-on-surface);
+	            margin: 0 0 24px 0;
+	        }
+
+	        .env-data {
+	            display: flex;
+	            gap: 32px;
+	        }
+
+	        .env-item {
+	            flex: 1;
+	            text-align: center;
+	            padding: 20px;
+	            background: var(--md-sys-color-surface-variant);
+	            border-radius: 16px;
+	        }
+
+	        .env-label {
+	            font-size: 14px;
+	            color: var(--md-sys-color-on-surface-variant);
+	            margin-bottom: 8px;
+	        }
+
+	        .env-value {
+	            font-size: 24px;
+	            font-weight: 600;
+	            color: var(--md-sys-color-on-surface);
+	        }
+
+	        /* 手动控制卡片 */
+	        .manual-card {
+	            background: var(--md-sys-color-surface);
+	            border-radius: 24px;
+	            padding: 32px;
+	            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	        }
+
+	        .manual-title {
+	            font-size: 20px;
+	            font-weight: 500;
+	            color: var(--md-sys-color-on-surface);
+	            margin: 0 0 24px 0;
+	        }
+
+	        .manual-grid {
+	            display: grid;
+	            grid-template-columns: repeat(4, 1fr);
+	            gap: 12px;
+	        }
+
+	        .manual-item {
+	            display: flex;
+	            align-items: center;
+	            justify-content: center;
+	            padding: 12px;
+	            background: var(--md-sys-color-surface-variant);
+	            border-radius: 16px;
+	            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	        }
+
+	        .manual-item:hover {
+	            background: var(--md-sys-color-tertiary-container);
+	        }
+
+	        .manual-checkbox {
+	            margin-right: 8px;
+	            transform: scale(1.2);
+	        }
+
+	        /* 响应式设计 */
+	        @media (max-width: 768px) {
+	            body {
+	                padding: 16px;
+	            }
+
+	            .app-title {
+	                font-size: 24px;
+	            }
+
+	            .status-cards {
+	                grid-template-columns: 1fr;
+	            }
+
+	            .button-group {
+	                flex-direction: column;
+	                align-items: center;
+	            }
+
+	            .io-cards-container {
+	                grid-template-columns: 1fr;
+	            }
+
+	            .io-grid, .manual-grid {
+	                grid-template-columns: repeat(2, 1fr);
+	            }
+
+	            .env-data {
+	                flex-direction: column;
+	            }
+	        }
+
+	        /* 动画效果 */
+	        @keyframes fadeIn {
+	            from { opacity: 0; transform: translateY(20px); }
+	            to { opacity: 1; transform: translateY(0); }
+	        }
+
+	        .status-card, .control-section, .config-card, .io-card, .env-card, .manual-card {
+	            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+	        }
+	    </style>
+	</head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>S7-1200 跑马灯控制程序</h1>
+    <div class="app-container">
+        <!-- 应用标题栏 -->
+        <div class="app-bar">
+            <h1 class="app-title">S7-1200 跑马灯控制程序</h1>
         </div>
 
-        <div class="status-bar">
-            <div class="status-item">
-                <strong>连接状态:</strong> <span id="connectionStatus">{{.ConnectionStatus}}</span>
+        <!-- 状态卡片组 -->
+        <div class="status-cards">
+            <div class="status-card">
+                <div class="status-label">连接状态</div>
+                <div class="status-value {{if eq .ConnectionStatus "已连接"}}connected{{else if eq .ConnectionStatus "连接失败"}}error{{else}}stopped{{end}}" id="connectionStatus">
+                    {{.ConnectionStatus}}
+                </div>
             </div>
-            <div class="status-item">
-                <strong>运行状态:</strong> <span id="runStatus">{{.RunStatus}}</span>
+            <div class="status-card">
+                <div class="status-label">运行状态</div>
+                <div class="status-value {{if eq .RunStatus "运行中"}}running{{else}}stopped{{end}}" id="runStatus">
+                    {{.RunStatus}}
+                </div>
             </div>
-            <div class="status-item">
-                <strong>当前挡位:</strong> <span id="speedLevel">{{.SpeedLevel}}</span>
+            <div class="status-card">
+                <div class="status-label">当前挡位</div>
+                <div class="status-value" id="speedLevel">{{.SpeedLevel}}</div>
             </div>
-            <div class="status-item">
-                <strong>延时值:</strong> <span id="delayValue">{{.DelayValue}}ms</span>
+            <div class="status-card">
+                <div class="status-label">延时值</div>
+                <div class="status-value" id="delayValue">{{.DelayValue}}ms</div>
             </div>
-            <div class="status-item">
-                <strong>当前输出点:</strong> <span id="currentOutput">{{.CurrentOutput}}</span>
+            <div class="status-card">
+                <div class="status-label">当前输出点</div>
+                <div class="status-value" id="currentOutput">{{.CurrentOutput}}</div>
             </div>
         </div>
 
-        <div class="control-panel">
-            <button class="btn btn-primary" onclick="startMarquee()">启动</button>
-            <button class="btn btn-danger" onclick="stopMarquee()">停止</button>
-            <button class="btn btn-success" onclick="switchSpeed()">速度切换</button>
+        <!-- 控制按钮区域 -->
+        <div class="control-section">
+            <h2 class="control-title">跑马灯控制</h2>
+            <div class="button-group">
+                <button class="md-button filled" onclick="startMarquee()">启动</button>
+                <button class="md-button outlined" onclick="stopMarquee()">停止</button>
+                <button class="md-button outlined" onclick="switchSpeed()">速度切换</button>
+            </div>
         </div>
 
-        <div class="connection-settings">
-            <h3>PLC连接设置</h3>
-            <div class="form-group">
-                <label>IP地址:</label>
-                <input type="text" id="ipInput" value="192.168.0.10">
+        <!-- PLC连接设置 -->
+        <div class="config-card">
+            <h2 class="config-title">PLC 连接设置</h2>
+            <div class="form-grid">
+                <div class="form-field">
+                    <div class="form-label">IP 地址</div>
+                    <input type="text" class="form-input" id="ipInput" value="192.168.0.10" placeholder="请输入PLC IP地址">
+                </div>
+                <div class="form-field">
+                    <div class="form-label">端口号</div>
+                    <input type="text" class="form-input" id="portInput" value="502" placeholder="请输入端口号">
+                </div>
+                <div class="form-field">
+                    <div class="form-label">Unit ID</div>
+                    <input type="text" class="form-input" id="unitIdInput" value="1" placeholder="请输入设备ID">
+                </div>
             </div>
-            <div class="form-group">
-                <label>端口号:</label>
-                <input type="text" id="portInput" value="502">
+            <div class="button-group">
+                <button class="md-button filled" onclick="connectPLC()">连接 PLC</button>
+                <button class="md-button outlined" onclick="saveConfig()">保存配置</button>
+                <button class="md-button outlined" onclick="disconnectPLC()">断开连接</button>
             </div>
-            <div class="form-group">
-                <label>Unit ID:</label>
-                <input type="text" id="unitIdInput" value="1">
-            </div>
-            <button class="btn btn-primary" onclick="connectPLC()">连接</button>
-            <button class="btn btn-success" onclick="saveConfig()">保存配置</button>
-            <button class="btn btn-danger" onclick="disconnectPLC()">断开</button>
         </div>
 
-        <div class="io-status">
-            <div>
-                                <h3>数字输出状态 (DQ 1-14) <button class="btn btn-primary" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;" onclick="refreshDQStatus()">刷新</button></h3>
+        <!-- IO状态显示区域 -->
+        <div class="io-cards-container">
+            <!-- 数字输出状态 -->
+            <div class="io-card">
+                <div class="io-title">
+                    <h3 style="margin: 0;">数字输出状态</h3>
+                    <button class="refresh-button" onclick="refreshDQStatus()">刷新</button>
+                </div>
                 <div class="io-grid" id="dqGrid">
                     {{range $i, $status := .DQStatus}}
                     {{if lt $i 8}}
@@ -167,8 +598,13 @@ func (ui *WebUI) initTemplate() {
                     {{end}}
                 </div>
             </div>
-            <div>
-                <h3>数字输入状态 (DI 10001-10014) <button class="btn btn-primary" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;" onclick="refreshDIStatus()">刷新</button></h3>
+
+            <!-- 数字输入状态 -->
+            <div class="io-card">
+                <div class="io-title">
+                    <h3 style="margin: 0;">数字输入状态</h3>
+                    <button class="refresh-button" onclick="refreshDIStatus()">刷新</button>
+                </div>
                 <div class="io-grid" id="diGrid">
                     {{range $i, $status := .DIStatus}}
                     {{if lt $i 8}}
@@ -181,27 +617,37 @@ func (ui *WebUI) initTemplate() {
             </div>
         </div>
 
-        <div class="environment">
-            <h3>环境数据</h3>
-            <p><strong>温度:</strong> <span id="temperature">{{.Temperature}}℃</span></p>
-            <p><strong>湿度:</strong> <span id="humidity">{{.Humidity}}%</span></p>
+        <!-- 环境数据 -->
+        <div class="env-card">
+            <h2 class="env-title">环境监测</h2>
+            <div class="env-data">
+                <div class="env-item">
+                    <div class="env-label">温度</div>
+                    <div class="env-value" id="temperature">{{.Temperature}}°C</div>
+                </div>
+                <div class="env-item">
+                    <div class="env-label">湿度</div>
+                    <div class="env-value" id="humidity">{{.Humidity}}%</div>
+                </div>
+            </div>
         </div>
 
-        <div class="manual-control">
-            <h3>手动控制 (停止时可用)</h3>
-                <div class="io-grid" id="manualGrid">
-                    {{range $i, $status := .DQStatus}}
-                    <div class="io-item {{$status}}">
-                        <label>
-                            <input type="checkbox" onchange="toggleOutput({{$i}})" {{if eq $status "ON"}}checked{{end}}>
+        <!-- 手动控制 -->
+        <div class="manual-card">
+            <h2 class="manual-title">手动控制</h2>
+            <p style="color: var(--md-sys-color-on-surface-variant); margin-bottom: 24px;">停止状态下可手动控制输出点，运行时自动保护</p>
+            <div class="manual-grid" id="manualGrid">
+                {{range $i, $status := .DQStatus}}
+                <div class="manual-item">
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" class="manual-checkbox" onchange="toggleOutput({{$i}})" {{if eq $status "ON"}}checked{{end}}>
+                        <span style="margin-left: 8px; font-weight: 500;">
                             {{if lt $i 8}}Q0.{{$i}}{{else}}Q1.{{sub $i 8}}{{end}}
-                        </label>
-                    </div>
-                    {{end}}
+                        </span>
+                    </label>
                 </div>
-
-        <div class="footer">
-            <p>Web界面 - 自动刷新状态</p>
+                {{end}}
+            </div>
         </div>
     </div>
 
@@ -213,12 +659,13 @@ func (ui *WebUI) initTemplate() {
             fetch('/status')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('connectionStatus').textContent = data.ConnectionStatus;
-                    document.getElementById('runStatus').textContent = data.RunStatus;
+                    // 更新状态卡片
+                    updateStatusCard('connectionStatus', data.ConnectionStatus);
+                    updateStatusCard('runStatus', data.RunStatus);
                     document.getElementById('speedLevel').textContent = data.SpeedLevel;
                     document.getElementById('delayValue').textContent = data.DelayValue + 'ms';
                     document.getElementById('currentOutput').textContent = data.CurrentOutput;
-                    document.getElementById('temperature').textContent = data.Temperature + '℃';
+                    document.getElementById('temperature').textContent = data.Temperature + '°C';
                     document.getElementById('humidity').textContent = data.Humidity + '%';
 
                     // 更新IO状态
@@ -226,23 +673,43 @@ func (ui *WebUI) initTemplate() {
                     updateIOStatus('diGrid', data.DIStatus);
                     updateManualControlCheckboxes(data.DQStatus);
                 })
-                .catch(err => console.log('Error:', err));
+                .catch(err => console.error('状态更新失败:', err));
+        }
+
+        function updateStatusCard(elementId, status) {
+            const element = document.getElementById(elementId);
+            element.textContent = status;
+
+            // 移除所有状态类
+            element.className = element.className.replace(/\b(connected|running|stopped|error)\b/g, '');
+
+            // 根据状态添加对应的CSS类
+            if (status === '已连接') {
+                element.classList.add('connected');
+            } else if (status === '运行中') {
+                element.classList.add('running');
+            } else if (status === '停止' || status === '未连接' || status === '连接失败') {
+                element.classList.add('stopped');
+            }
         }
 
         function updateManualControlCheckboxes(statusArray) {
             const grid = document.getElementById('manualGrid');
-            const checkboxes = grid.getElementsByTagName('input');
-            for (let i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = (statusArray[i] === 'ON');
-            }
+            const checkboxes = grid.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((checkbox, index) => {
+                checkbox.checked = (statusArray[index] === 'ON');
+            });
         }
 
         function updateIOStatus(gridId, statusArray) {
             const grid = document.getElementById(gridId);
-            const items = grid.getElementsByClassName('io-item');
-            for (let i = 0; i < items.length; i++) {
-                items[i].className = 'io-item ' + statusArray[i].toLowerCase();
-            }
+            const items = grid.querySelectorAll('.io-item');
+            items.forEach((item, index) => {
+                // 移除所有状态类
+                item.className = item.className.replace(/\b(on|off)\b/g, '');
+                // 添加新的状态类
+                item.classList.add(statusArray[index].toLowerCase());
+            });
         }
 
         function connectPLC() {
