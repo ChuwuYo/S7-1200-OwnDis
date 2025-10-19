@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type='text/xsl' href='ConversionLogFile.xsl'?>
+<LogFile projectName="Modbus TCP_V15" typeText="类型" messageText="消息" timeText="时间">
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:43">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="已开始升级" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:44">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="读取之前项目/库的信息。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:44">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="将数据导入新项目/库。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:47">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="更新新项目/库。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:47">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="更新新项目/库。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:52">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="更新新项目/库。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:52">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="正在转换交叉引用信息。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:52">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="交叉引用信息已成功创建." />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:52">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="交叉引用信息的转换已完成。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:52">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="清除过时的元数据。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Package container 'Siemens.Simatic.Tech.BasicMotionControl.V14' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Package container 'Siemens.Simatic.Safety.Option_PlusV14' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Package container 'HW.S71200.CPU.V4.CPU_1212F.MDD_6ES7212-1AF40-0XB0_4.2_14.0.0' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Package container 'Siemens.Simatic.Tech.PidControl.V12SP1' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Package container 'HW.S71200.CPU.V4.CPU_1212C.MDD_6ES7212-1AE40-0XB0_4.2_14.0.0' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Package container 'Siemens.Simatic.Lang.S7BSW.V14.0.0.0.NonMandatory' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Product version 'Siemens.Simatic.Portal:14.00.01.00' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Product version 'Siemens.Simatic.Tech.BasicMotionControl:14.00.00.00' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Product version 'Siemens.Simatic.STEP7.Safety:14.00.00.00' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Product version 'Siemens.Simatic.Tech.PidControl:13.00.00.00' was deleted</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="2024/10/7 11:53:52" Debug="false">
+    <Text>Product version 'Siemens.Simatic.Tech.PidControl.V12:12.00.01.00' was deleted</Text>
+  </Details>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:52">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="保存已升级的项目/库。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="2024/10/7 11:53:53">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="保存已升级的项目/库。" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="Automation-ObjectFrame-Feedbacks" MessageId="ConversionInfoTabProjectSucceeded" MessageClass="Success" Timestamp="2024/10/7 11:53:53">
+    <Number ServiceNumber="80" MessageNumber="34" />
+    <Text FeedbackText="项目 'C:\Users\Administrator\Desktop\111\Modbus TCP\System\PEData.plf' 已成功升级并另存为项目 'C:\Users\Administrator\Desktop\111\Modbus TCP_V15\System\PEData.plf'。" />
+    <Help HelpId="-1" HelpFile="" />
+  </MessageCell>
+</LogFile>
